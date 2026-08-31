@@ -44,6 +44,7 @@ def init_db() -> None:
     ensure_database_dir()
     from app.models import history as _history  # noqa: F401
     from app.models import profile as _profile  # noqa: F401
+    from app.models import settings as _settings  # noqa: F401
 
     Base.metadata.create_all(bind=engine)
     _ensure_sqlite_columns()

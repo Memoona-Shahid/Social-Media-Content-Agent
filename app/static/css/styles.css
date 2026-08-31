@@ -1,14 +1,39 @@
 :root {
   --paper: #f2ebe0;
+  --paper-wash: #f7f1e6;
   --ink: #1b1713;
   --muted: #6d6458;
   --rule: #d8ccb8;
   --panel: #fff8ee;
+  --panel-strong: #fffdf8;
   --accent: #b5441a;
+  --accent-glow: rgba(181, 68, 26, 0.08);
   --forest: #214336;
   --ok: #214336;
   --warn: #9a3412;
   --shadow: 0 18px 40px rgba(27, 23, 19, 0.08);
+  --flash-bg: #eef3ea;
+  --flash-warn-bg: #f8ebe6;
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  --paper: #151210;
+  --paper-wash: #0e0c0a;
+  --ink: #f4eadc;
+  --muted: #b4a898;
+  --rule: #3d362d;
+  --panel: #1e1a16;
+  --panel-strong: #26211b;
+  --accent: #e06a3d;
+  --accent-glow: rgba(224, 106, 61, 0.16);
+  --forest: #9cc9b4;
+  --ok: #9cc9b4;
+  --warn: #e39a74;
+  --shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+  --flash-bg: #1a2420;
+  --flash-warn-bg: #2a1c16;
+  color-scheme: dark;
 }
 
 *,
@@ -27,8 +52,8 @@ body {
   font-family: "Sora", "Segoe UI", sans-serif;
   color: var(--ink);
   background:
-    radial-gradient(circle at top right, rgba(181, 68, 26, 0.08), transparent 28%),
-    linear-gradient(180deg, #f7f1e6 0%, var(--paper) 100%);
+    radial-gradient(circle at top right, var(--accent-glow), transparent 28%),
+    linear-gradient(180deg, var(--paper-wash) 0%, var(--paper) 100%);
 }
 
 .frame {
@@ -87,8 +112,10 @@ body {
 
 .nav {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.35rem;
   margin-left: auto;
+  justify-content: flex-end;
 }
 
 .nav__link {
@@ -357,13 +384,22 @@ h2 {
   margin: 0.85rem 0 0.6rem;
 }
 
+.settings-picker {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.field-hint code {
+  font-family: "Sora", "Segoe UI", sans-serif;
+  font-size: 0.84em;
+}
+
 .platform-card {
   position: relative;
   display: grid;
   gap: 0.25rem;
   padding: 0.9rem 0.85rem;
   border: 1px solid var(--rule);
-  background: #fffdf8;
+  background: var(--panel-strong);
   cursor: pointer;
 }
 
@@ -450,9 +486,17 @@ h2 {
   flex-wrap: wrap;
 }
 
+.flash {
+  margin: 0 0 1.4rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--forest);
+  background: var(--flash-bg);
+  color: var(--forest);
+}
+
 .flash--warn {
   border-color: var(--warn);
-  background: #f8ebe6;
+  background: var(--flash-warn-bg);
   color: var(--warn);
 }
 
@@ -573,7 +617,7 @@ h2 {
   width: 100%;
   padding: 0.7rem 0.8rem;
   border: 1px solid var(--rule);
-  background: #fffdf8;
+  background: var(--panel-strong);
   color: var(--ink);
   font: inherit;
   font-size: 0.95rem;

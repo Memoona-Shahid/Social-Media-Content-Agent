@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.dependencies import get_brand_memory, get_built_prompt, require_built_prompt
-from app.services import history_service
+from app.services import history_service, settings_service
 from app.services.generator import (
     GeneratorError,
     generate_post,
@@ -41,7 +41,8 @@ def generate_from_form(
         return RedirectResponse(url=error_url, status_code=status.HTTP_303_SEE_OTHER)
 
     try:
-        result = generate_post(prompt)
+        prefs = settings_service.get_preferences(db)
+        result = generate_post(prompt, preferred_provider=prefs.llm_provider)
     except GeneratorError as exc:
         set_generation_error(request.session, str(exc))
         return RedirectResponse(url=error_url, status_code=status.HTTP_303_SEE_OTHER)
@@ -59,7 +60,8 @@ def generate_from_api(
     db: Session = Depends(get_db),
 ) -> dict[str, object]:
     try:
-        result = generate_post(prompt)
+        prefs = settings_service.get_preferences(db)
+        result = generate_post(prompt, preferred_provider=prefs.llm_provider)
     except GeneratorError as exc:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="{{ theme|default('light') }}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,6 +28,7 @@
           <a class="nav__link {% if active_nav == 'output' %}is-active{% endif %}" href="/output">Output</a>
           <a class="nav__link {% if active_nav == 'history' %}is-active{% endif %}" href="/history">History</a>
           <a class="nav__link {% if active_nav == 'profile' %}is-active{% endif %}" href="/profile">Brand Voice</a>
+          <a class="nav__link {% if active_nav == 'settings' %}is-active{% endif %}" href="/settings">Settings</a>
         </nav>
         <p class="env-chip" title="Current application environment">{{ app_env }}</p>
       </header>

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="hero hero--compact">
+    <p class="kicker">Settings</p>
+    <h1>How this studio should behave</h1>
+    <p class="lede">
+      Set a default platform, choose which language model to call, and switch the workspace theme.
+    </p>
+  </section>
+
+  {% if saved %}
+    <p class="flash" data-flash role="status">Settings saved.</p>
+  {% endif %}
+
+  <form class="voice-form" method="post" action="/settings" novalidate>
+    <fieldset class="form-panel {% if errors.default_platform %}has-error{% endif %}">
+      <legend>Default platform</legend>
+      <p class="field-hint" id="platform-default-hint">Pre-selected on Compose when you start a new brief.</p>
+      <div class="platform-picker" role="radiogroup" aria-describedby="platform-default-hint">
+        {% for key, meta in platforms.items() %}
+          <label class="platform-card">
+            <input
+              type="radio"
+              name="default_platform"
+              value="{{ key }}"
+              {% if values.default_platform == key %}checked{% endif %}
+            />
+            <span class="platform-card__name">{{ meta.label }}</span>
+            <span class="platform-card__hint">{{ meta.hint }}</span>
+          </label>
+        {% endfor %}
+      </div>
+      {% if errors.default_platform %}<span class="field-error">{{ errors.default_platform }}</span>{% endif %}
+    </fieldset>
+
+    <fieldset class="form-panel {% if errors.llm_provider %}has-error{% endif %}">
+      <legend>Default LLM</legend>
+      <p class="field-hint" id="llm-hint">
+        API keys stay in <code>.env</code>. This chooses which provider Generate uses.
+        Groq is {{ "ready" if groq_configured else "not set" }};
+        OpenAI is {{ "ready" if openai_configured else "not set" }}.
+      </p>
+      <div class="template-picker settings-picker" role="radiogroup" aria-describedby="llm-hint">
+        {% for key, meta in llm_options.items() %}
+          <label class="platform-card">
+            <input
+              type="radio"
+              name="llm_provider"
+              value="{{ key }}"
+              {% if values.llm_provider == key %}checked{% endif %}
+            />
+            <span class="platform-card__name">{{ meta.label }}</span>
+            <span class="platform-card__hint">{{ meta.hint }}</span>
+          </label>
+        {% endfor %}
+      </div>
+      {% if errors.llm_provider %}<span class="field-error">{{ errors.llm_provider }}</span>{% endif %}
+    </fieldset>
+
+    <fieldset class="form-panel {% if errors.theme %}has-error{% endif %}">
+      <legend>Appearance</legend>
+      <p class="field-hint" id="theme-hint">Light keeps the paper studio. Dark is for low-light work.</p>
+      <div class="template-picker settings-picker" role="radiogroup" aria-describedby="theme-hint">
+        {% for key, meta in theme_options.items() %}
+          <label class="platform-card">
+            <input
+              type="radio"
+              name="theme"
+              value="{{ key }}"
+              {% if values.theme == key %}checked{% endif %}
+            />
+            <span class="platform-card__name">{{ meta.label }}</span>
+            <span class="platform-card__hint">{{ meta.hint }}</span>
+          </label>
+        {% endfor %}
+      </div>
+      {% if errors.theme %}<span class="field-error">{{ errors.theme }}</span>{% endif %}
+    </fieldset>
+
+    <div class="form-actions">
+      <button class="button" type="submit">Save settings</button>
+    </div>
+  </form>
+{% endblock %}

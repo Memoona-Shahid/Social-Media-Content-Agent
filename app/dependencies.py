@@ -9,6 +9,7 @@ from app.services.memory_service import (
     load_brand_memory,
 )
 from app.services.prompt_builder import BuiltPrompt, build_prompt
+from app.services.settings_service import AppPreferences, get_preferences
 from app.services.topic_service import get_brief
 
 
@@ -19,6 +20,11 @@ def get_brand_memory(db: Session = Depends(get_db)) -> BrandMemory:
     in the current profile, not a stale in-memory copy.
     """
     return load_brand_memory(db)
+
+
+def get_app_preferences(db: Session = Depends(get_db)) -> AppPreferences:
+    """Load studio defaults for platform, LLM, and theme."""
+    return get_preferences(db)
 
 
 def require_brand_memory(

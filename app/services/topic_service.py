@@ -26,9 +26,15 @@ def save_brief(request: Request, brief: TopicBrief) -> None:
     request.session[SESSION_KEY] = brief.model_dump()
 
 
-def brief_form_values(brief: TopicBrief | None) -> dict[str, str]:
+def brief_form_values(
+    brief: TopicBrief | None,
+    default_platform: str = "",
+) -> dict[str, str]:
     if brief is None:
-        return dict(EMPTY_BRIEF)
+        values = dict(EMPTY_BRIEF)
+        if default_platform in PLATFORM_OPTIONS:
+            values["platform"] = default_platform
+        return values
     return brief.model_dump()
 
 

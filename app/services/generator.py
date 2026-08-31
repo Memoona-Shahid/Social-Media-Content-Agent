@@ -88,12 +88,13 @@ def generate_post(
     *,
     settings: Settings | None = None,
     client: httpx.Client | None = None,
+    preferred_provider: str | None = None,
 ) -> GenerationResult:
     if not prompt.ready:
         raise GeneratorError("Prompt is not ready. Capture a topic and save a brand voice first.")
 
     config = settings or get_settings()
-    provider, api_key, model, url = _provider_config(config)
+    provider, api_key, model, url = _provider_config(config, preferred_provider)
     owns_client = client is None
     http = client or httpx.Client(timeout=config.llm_timeout_seconds)
     payload = {
@@ -137,14 +138,19 @@ def _max_tokens(platform: str, template: str) -> int:
     return max(base, extra)
 
 
-def _provider_config(settings: Settings) -> tuple[str, str, str, str]:
-    provider = settings.active_provider
+def _provider_config(
+    settings: Settings,
+    preferred_provider: str | None = None,
+) -> tuple[str, str, str, str]:
+    provider = (preferred_provider or "").strip().lower()
+    if provider not in {"groq", "openai"}:
+        provider = settings.active_provider
     if provider == "openai":
         if not settings.openai_configured:
-            raise GeneratorError(settings.llm_setup_message)
+            raise GeneratorError("Add OPENAI_API_KEY to .env to generate posts.")
         return provider, settings.openai_api_key.strip(), settings.openai_model, OPENAI_CHAT_URL
     if not settings.groq_configured:
-        raise GeneratorError(settings.llm_setup_message)
+        raise GeneratorError("Add GROQ_API_KEY to .env to generate posts.")
     return provider, settings.groq_api_key.strip(), settings.groq_model, GROQ_CHAT_URL
 
 

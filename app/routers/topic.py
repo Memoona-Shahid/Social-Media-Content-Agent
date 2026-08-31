@@ -2,13 +2,14 @@ from fastapi import APIRouter, Depends, Form, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from pydantic import ValidationError
 
-from app.dependencies import get_brand_memory, get_built_prompt
+from app.dependencies import get_app_preferences, get_brand_memory, get_built_prompt
 from app.schemas.templates import TEMPLATE_OPTIONS
 from app.schemas.topic import EMPTY_BRIEF, PLATFORM_OPTIONS, TopicBrief
 from app.services import topic_service
 from app.services.generator import get_generation, pop_generation_error
 from app.services.memory_service import BrandMemory
 from app.services.prompt_builder import BuiltPrompt
+from app.services.settings_service import AppPreferences
 from app.templating import build_template_context, templates
 
 router = APIRouter(tags=["topic"])
@@ -67,13 +68,14 @@ def compose_page(
     ready: int = 0,
     memory: BrandMemory = Depends(get_brand_memory),
     prompt: BuiltPrompt = Depends(get_built_prompt),
+    prefs: AppPreferences = Depends(get_app_preferences),
 ) -> HTMLResponse:
     brief = topic_service.get_brief(request)
     return _render(
         request,
         memory=memory,
         prompt=prompt,
-        values=topic_service.brief_form_values(brief),
+        values=topic_service.brief_form_values(brief, default_platform=prefs.default_platform),
         ready=bool(ready) and brief is not None,
     )
 
