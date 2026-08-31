@@ -70,7 +70,7 @@
       <div class="section-head">
         <div>
           <h2 id="brief-heading">Current brief</h2>
-          <p>This topic and platform are ready for the next generation step.</p>
+          <p>This topic and platform are compiled with brand memory into a structured prompt.</p>
         </div>
       </div>
       <dl class="memory-grid">
@@ -89,4 +89,34 @@
       </dl>
     </section>
   {% endif %}
+
+  <section class="prompt-board" aria-labelledby="prompt-heading">
+    <div class="section-head">
+      <div>
+        <h2 id="prompt-heading">Structured prompt</h2>
+        <p>System and user messages the generator will send. Rebuilt on every request.</p>
+      </div>
+    </div>
+
+    {% if prompt.ready %}
+      <div class="prompt-stack">
+        <article class="prompt-block">
+          <h3>System</h3>
+          <pre>{{ prompt.system }}</pre>
+        </article>
+        <article class="prompt-block">
+          <h3>User</h3>
+          <pre>{{ prompt.user }}</pre>
+        </article>
+      </div>
+    {% elif "brief" in prompt.missing and "memory" in prompt.missing %}
+      <p class="memory-empty">Capture a topic and save a brand voice to build the prompt.</p>
+    {% elif "brief" in prompt.missing %}
+      <p class="memory-empty">Capture a topic and platform above to build the prompt.</p>
+    {% else %}
+      <p class="memory-empty">
+        Save a <a href="/profile">brand voice</a> so the prompt can include your tone and audience.
+      </p>
+    {% endif %}
+  </section>
 {% endblock %}
