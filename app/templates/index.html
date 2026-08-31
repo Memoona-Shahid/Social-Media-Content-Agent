@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="hero">
+    <p class="kicker">Workspace online</p>
+    <h1>Write once. Sound like yourself on every platform.</h1>
+    <p class="lede">
+      This studio turns a topic and your brand voice into ready-to-publish posts.
+      The application foundation, configuration, and workspace UI are now live.
+    </p>
+  </section>
+
+  <section class="status-board" aria-labelledby="status-heading">
+    <div class="section-head">
+      <h2 id="status-heading">System status</h2>
+      <p>Live checks from the running application.</p>
+    </div>
+
+    <ul class="status-grid">
+      <li class="status-card">
+        <span class="status-card__label">Application</span>
+        <strong>Running</strong>
+        <span class="status-card__meta">{{ app_name }}</span>
+      </li>
+      <li class="status-card">
+        <span class="status-card__label">SQLite</span>
+        <strong class="{{ 'ok' if database_ok else 'warn' }}">
+          {{ "Connected" if database_ok else "Unreachable" }}
+        </strong>
+        <span class="status-card__meta">Local file database</span>
+      </li>
+      <li class="status-card">
+        <span class="status-card__label">Groq</span>
+        <strong class="{{ 'ok' if groq_configured else 'muted' }}">
+          {{ "Key loaded" if groq_configured else "Not set" }}
+        </strong>
+        <span class="status-card__meta">Configured in .env</span>
+      </li>
+      <li class="status-card">
+        <span class="status-card__label">OpenAI</span>
+        <strong class="{{ 'ok' if openai_configured else 'muted' }}">
+          {{ "Key loaded" if openai_configured else "Not set" }}
+        </strong>
+        <span class="status-card__meta">Configured in .env</span>
+      </li>
+    </ul>
+  </section>
+{% endblock %}
