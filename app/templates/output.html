@@ -56,7 +56,10 @@
     {% if not llm_ready %}
       <p class="notice">{{ llm_setup_message }}</p>
     {% endif %}
-    <p class="output-back"><a href="/compose">Back to compose</a></p>
+    <p class="output-back">
+      <a href="/compose">Back to compose</a>
+      · <a href="/history">View history</a>
+    </p>
   {% else %}
     <p class="memory-empty">
       No generated post is stored yet.

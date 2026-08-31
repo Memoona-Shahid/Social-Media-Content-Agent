@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="hero hero--compact">
+    <p class="kicker">History</p>
+    <h1>Previous generations</h1>
+    <p class="lede">
+      Every successful draft is saved here. Open one to reread or copy it.
+    </p>
+  </section>
+
+  {% if posts %}
+    <ul class="history-list">
+      {% for post in posts %}
+        <li>
+          <a class="history-card" href="/history/{{ post.id }}">
+            <span class="kicker">{{ post.platform_label }}</span>
+            <strong>{{ post.topic }}</strong>
+            <span class="history-card__excerpt">{{ post.excerpt }}</span>
+            <span class="history-card__meta">{{ post.created_label }} · {{ post.provider }}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="memory-empty">
+      No generations yet.
+      <a href="/compose">Compose a topic</a> and generate a draft.
+    </p>
+  {% endif %}
+{% endblock %}

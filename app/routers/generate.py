@@ -1,7 +1,10 @@
 from fastapi import APIRouter, Depends, Form, HTTPException, Request, status
 from fastapi.responses import RedirectResponse, Response
+from sqlalchemy.orm import Session
 
-from app.dependencies import get_built_prompt, require_built_prompt
+from app.database import get_db
+from app.dependencies import get_brand_memory, get_built_prompt, require_built_prompt
+from app.services import history_service
 from app.services.generator import (
     GeneratorError,
     generate_post,
@@ -9,6 +12,7 @@ from app.services.generator import (
     save_generation,
     set_generation_error,
 )
+from app.services.memory_service import BrandMemory
 from app.services.prompt_builder import BuiltPrompt
 
 router = APIRouter(tags=["generate"])
@@ -24,6 +28,8 @@ def _redirects_for(source: str) -> tuple[str, str]:
 def generate_from_form(
     request: Request,
     prompt: BuiltPrompt = Depends(get_built_prompt),
+    memory: BrandMemory = Depends(get_brand_memory),
+    db: Session = Depends(get_db),
     source: str = Form("compose"),
 ) -> Response:
     success_url, error_url = _redirects_for(source)
@@ -41,6 +47,7 @@ def generate_from_form(
         return RedirectResponse(url=error_url, status_code=status.HTTP_303_SEE_OTHER)
 
     save_generation(request.session, result)
+    history_service.record_generation(db, result, voice_name=memory.name)
     return RedirectResponse(url=success_url, status_code=status.HTTP_303_SEE_OTHER)
 
 
@@ -48,6 +55,8 @@ def generate_from_form(
 def generate_from_api(
     request: Request,
     prompt: BuiltPrompt = Depends(require_built_prompt),
+    memory: BrandMemory = Depends(get_brand_memory),
+    db: Session = Depends(get_db),
 ) -> dict[str, object]:
     try:
         result = generate_post(prompt)
@@ -57,7 +66,8 @@ def generate_from_api(
             detail=str(exc),
         ) from exc
     save_generation(request.session, result)
-    return {"ok": True, **result.to_dict()}
+    row = history_service.record_generation(db, result, voice_name=memory.name)
+    return {"ok": True, "id": row.id, **result.to_dict()}
 
 
 @router.get("/api/generation")

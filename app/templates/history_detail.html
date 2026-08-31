@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="hero hero--compact">
+    <p class="kicker">{{ post.platform_label }}</p>
+    <h1>{{ post.topic }}</h1>
+    <p class="lede">
+      Saved {{ post.created_label }}
+      {% if post.voice_name %} · {{ post.voice_name }}{% endif %}
+      · {{ post.provider }} / {{ post.model }}
+    </p>
+  </section>
+
+  <article class="draft-canvas" aria-labelledby="history-copy-heading">
+    <h2 id="history-copy-heading" class="visually-hidden">Saved post</h2>
+    <pre data-copy-source>{{ post.content }}</pre>
+  </article>
+
+  <div class="button-row output-actions">
+    <button class="button button--ghost" type="button" data-copy data-copy-label="Copy">
+      Copy
+    </button>
+    <a class="button" href="/history">Back to history</a>
+  </div>
+{% endblock %}
