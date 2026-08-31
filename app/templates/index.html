@@ -39,6 +39,13 @@
         </span>
       </li>
       <li class="status-card">
+        <span class="status-card__label">Generator</span>
+        <strong class="{{ 'ok' if llm_ready else 'muted' }}">
+          {{ "Ready" if llm_ready else "Not set" }}
+        </strong>
+        <span class="status-card__meta">{{ llm_provider }}</span>
+      </li>
+      <li class="status-card">
         <span class="status-card__label">Groq</span>
         <strong class="{{ 'ok' if groq_configured else 'muted' }}">
           {{ "Key loaded" if groq_configured else "Not set" }}

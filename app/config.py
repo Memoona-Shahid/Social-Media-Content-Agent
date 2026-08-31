@@ -22,6 +22,11 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./data/app.db"
     groq_api_key: str = ""
     openai_api_key: str = ""
+    llm_provider: str = "groq"
+    groq_model: str = "llama-3.3-70b-versatile"
+    openai_model: str = "gpt-4o-mini"
+    llm_timeout_seconds: float = 45
+    llm_temperature: float = 0.7
 
     @property
     def is_sqlite(self) -> bool:
@@ -34,6 +39,23 @@ class Settings(BaseSettings):
     @property
     def openai_configured(self) -> bool:
         return bool(self.openai_api_key.strip())
+
+    @property
+    def active_provider(self) -> str:
+        provider = self.llm_provider.strip().lower()
+        return provider if provider in {"groq", "openai"} else "groq"
+
+    @property
+    def llm_ready(self) -> bool:
+        if self.active_provider == "openai":
+            return self.openai_configured
+        return self.groq_configured
+
+    @property
+    def llm_setup_message(self) -> str:
+        if self.active_provider == "openai":
+            return "Add OPENAI_API_KEY to .env to generate posts."
+        return "Add GROQ_API_KEY to .env to generate posts."
 
 
 @lru_cache

@@ -5,6 +5,7 @@ from pydantic import ValidationError
 from app.dependencies import get_brand_memory, get_built_prompt
 from app.schemas.topic import EMPTY_BRIEF, PLATFORM_OPTIONS, TopicBrief
 from app.services import topic_service
+from app.services.generator import get_generation, pop_generation_error
 from app.services.memory_service import BrandMemory
 from app.services.prompt_builder import BuiltPrompt
 from app.templating import build_template_context, templates
@@ -35,6 +36,7 @@ def _render(
     values: dict[str, str],
     errors: dict[str, str] | None = None,
     ready: bool = False,
+    generated: bool = False,
 ) -> HTMLResponse:
     brief = topic_service.get_brief(request)
     context = build_template_context(
@@ -49,6 +51,9 @@ def _render(
         captured_brief=brief,
         platform_label=topic_service.platform_label(brief.platform) if brief else "",
         prompt=prompt,
+        generation=get_generation(request.session),
+        generate_error=pop_generation_error(request.session),
+        generated=generated,
     )
     return templates.TemplateResponse(request, "compose.html", context)
 
@@ -57,6 +62,7 @@ def _render(
 def compose_page(
     request: Request,
     ready: int = 0,
+    generated: int = 0,
     memory: BrandMemory = Depends(get_brand_memory),
     prompt: BuiltPrompt = Depends(get_built_prompt),
 ) -> HTMLResponse:
@@ -67,6 +73,7 @@ def compose_page(
         prompt=prompt,
         values=topic_service.brief_form_values(brief),
         ready=bool(ready) and brief is not None,
+        generated=bool(generated),
     )
 
 

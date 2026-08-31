@@ -443,12 +443,29 @@ h2 {
   flex-wrap: wrap;
 }
 
-.flash {
-  margin: 0 0 1.4rem;
-  padding: 0.8rem 1rem;
-  border: 1px solid var(--forest);
-  background: #e8f0ea;
-  color: var(--forest);
+.flash--warn {
+  border-color: var(--warn);
+  background: #f8ebe6;
+  color: var(--warn);
+}
+
+.generate-form {
+  margin-top: 1rem;
+}
+
+.draft-board {
+  margin-top: 2.2rem;
+}
+
+.button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.button:disabled:hover,
+.button:disabled:focus-visible {
+  background: var(--ink);
+  border-color: var(--ink);
 }
 
 .voice-form {

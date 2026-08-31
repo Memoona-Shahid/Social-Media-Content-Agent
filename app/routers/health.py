@@ -21,6 +21,10 @@ def health_check(memory: BrandMemory = Depends(get_brand_memory)) -> dict[str, o
         "environment": settings.app_env,
         "database": "connected" if database_ok else "unreachable",
         "memory": "loaded" if memory.loaded else "empty",
+        "llm": {
+            "provider": settings.active_provider,
+            "ready": settings.llm_ready,
+        },
         "providers": {
             "groq": settings.groq_configured,
             "openai": settings.openai_configured,

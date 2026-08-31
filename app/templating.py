@@ -17,6 +17,9 @@ def build_template_context(**extra: object) -> dict[str, object]:
         "app_version": __version__,
         "debug": settings.debug,
         "active_nav": "",
+        "llm_provider": settings.active_provider,
+        "llm_ready": settings.llm_ready,
+        "llm_setup_message": settings.llm_setup_message,
     }
     context.update(extra)
     return context

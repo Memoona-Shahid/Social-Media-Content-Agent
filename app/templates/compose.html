@@ -16,7 +16,11 @@
     </p>
   {% endif %}
 
-  {% if ready %}
+  {% if generate_error %}
+    <p class="flash flash--warn" role="alert">{{ generate_error }}</p>
+  {% elif generated %}
+    <p class="flash" data-flash role="status">Draft generated.</p>
+  {% elif ready %}
     <p class="flash" data-flash role="status">Brief captured for {{ platform_label }}.</p>
   {% endif %}
 
@@ -109,6 +113,16 @@
           <pre>{{ prompt.user }}</pre>
         </article>
       </div>
+      <form class="generate-form" method="post" action="/generate">
+        {% if not llm_ready %}
+          <p class="notice">{{ llm_setup_message }}</p>
+        {% endif %}
+        <div class="form-actions">
+          <button class="button" type="submit" {% if not llm_ready %}disabled{% endif %}>
+            Generate post
+          </button>
+        </div>
+      </form>
     {% elif "brief" in prompt.missing and "memory" in prompt.missing %}
       <p class="memory-empty">Capture a topic and save a brand voice to build the prompt.</p>
     {% elif "brief" in prompt.missing %}
@@ -119,4 +133,18 @@
       </p>
     {% endif %}
   </section>
+
+  {% if generation %}
+    <section class="draft-board" aria-labelledby="draft-heading">
+      <div class="section-head">
+        <div>
+          <h2 id="draft-heading">Generated draft</h2>
+          <p>{{ generation.provider }} · {{ generation.model }}</p>
+        </div>
+      </div>
+      <article class="prompt-block">
+        <pre>{{ generation.content }}</pre>
+      </article>
+    </section>
+  {% endif %}
 {% endblock %}
