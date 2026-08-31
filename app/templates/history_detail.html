@@ -22,4 +22,10 @@
     </button>
     <a class="button" href="/history">Back to history</a>
   </div>
+  <p class="export-row">
+    Download
+    <a href="/history/{{ post.id }}/export/txt">TXT</a>
+    <a href="/history/{{ post.id }}/export/md">Markdown</a>
+    <a href="/history/{{ post.id }}/export/pdf">PDF</a>
+  </p>
 {% endblock %}

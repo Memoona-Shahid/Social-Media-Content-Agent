@@ -57,6 +57,12 @@
         </button>
       </form>
     </div>
+    <p class="export-row">
+      Download
+      <a href="/export/txt">TXT</a>
+      <a href="/export/md">Markdown</a>
+      <a href="/export/pdf">PDF</a>
+    </p>
     {% if not llm_ready %}
       <p class="notice">{{ llm_setup_message }}</p>
     {% endif %}

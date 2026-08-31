@@ -8,7 +8,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from app import __version__
 from app.config import get_settings
 from app.database import init_db
-from app.routers import generate, health, history, memory, output, pages, profile, prompt, topic
+from app.routers import export, generate, health, history, memory, output, pages, profile, prompt, topic
 
 APP_DIR = Path(__file__).resolve().parent
 
@@ -42,6 +42,7 @@ def create_app() -> FastAPI:
     application.include_router(generate.router)
     application.include_router(output.router)
     application.include_router(history.router)
+    application.include_router(export.router)
     application.add_middleware(
         SessionMiddleware,
         secret_key=settings.secret_key,
