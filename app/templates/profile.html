@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="hero hero--compact">
+    <p class="kicker">Brand voice</p>
+    <h1>{{ "Edit your profile" if profile else "Create your profile" }}</h1>
+    <p class="lede">
+      This is the voice every post should sound like: who you are, who you speak to,
+      and how you write.
+    </p>
+  </section>
+
+  {% if saved %}
+    <p class="flash" data-flash role="status">Brand voice saved.</p>
+  {% endif %}
+
+  <form class="voice-form" method="post" action="/profile" novalidate>
+    <fieldset class="form-panel">
+      <legend>Identity</legend>
+      <div class="form-grid">
+        <p class="field {% if errors.name %}has-error{% endif %}">
+          <label for="name">Name</label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            maxlength="120"
+            required
+            value="{{ values.name }}"
+            autocomplete="name"
+            aria-invalid="{{ 'true' if errors.name else 'false' }}"
+            {% if errors.name %}aria-describedby="name-error"{% endif %}
+          />
+          {% if errors.name %}<span id="name-error" class="field-error">{{ errors.name }}</span>{% endif %}
+        </p>
+        <p class="field {% if errors.profession %}has-error{% endif %}">
+          <label for="profession">Profession</label>
+          <input
+            id="profession"
+            name="profession"
+            type="text"
+            maxlength="160"
+            required
+            value="{{ values.profession }}"
+            placeholder="Product designer, founder, data analyst"
+            aria-invalid="{{ 'true' if errors.profession else 'false' }}"
+            {% if errors.profession %}aria-describedby="profession-error"{% endif %}
+          />
+          {% if errors.profession %}<span id="profession-error" class="field-error">{{ errors.profession }}</span>{% endif %}
+        </p>
+        <p class="field field--wide {% if errors.audience %}has-error{% endif %}">
+          <label for="audience">Audience</label>
+          <textarea
+            id="audience"
+            name="audience"
+            rows="3"
+            maxlength="500"
+            required
+            placeholder="Early-career engineers who want practical career advice"
+            aria-invalid="{{ 'true' if errors.audience else 'false' }}"
+            {% if errors.audience %}aria-describedby="audience-error"{% endif %}
+          >{{ values.audience }}</textarea>
+          {% if errors.audience %}<span id="audience-error" class="field-error">{{ errors.audience }}</span>{% endif %}
+        </p>
+      </div>
+    </fieldset>
+
+    <fieldset class="form-panel">
+      <legend>Voice</legend>
+      <div class="form-grid">
+        <p class="field {% if errors.tone %}has-error{% endif %}">
+          <label for="tone">Tone</label>
+          <input
+            id="tone"
+            name="tone"
+            type="text"
+            list="tone-options"
+            maxlength="200"
+            required
+            value="{{ values.tone }}"
+            placeholder="Warm, direct, lightly witty"
+            aria-invalid="{{ 'true' if errors.tone else 'false' }}"
+            {% if errors.tone %}aria-describedby="tone-error"{% endif %}
+          />
+          <datalist id="tone-options">
+            <option value="Professional and clear"></option>
+            <option value="Conversational and warm"></option>
+            <option value="Witty and concise"></option>
+            <option value="Authoritative but approachable"></option>
+          </datalist>
+          {% if errors.tone %}<span id="tone-error" class="field-error">{{ errors.tone }}</span>{% endif %}
+        </p>
+        <p class="field {% if errors.style %}has-error{% endif %}">
+          <label for="style">Style</label>
+          <input
+            id="style"
+            name="style"
+            type="text"
+            list="style-options"
+            maxlength="200"
+            value="{{ values.style }}"
+            placeholder="Short paragraphs, concrete examples"
+            aria-invalid="{{ 'true' if errors.style else 'false' }}"
+            {% if errors.style %}aria-describedby="style-error"{% endif %}
+          />
+          <datalist id="style-options">
+            <option value="Short and punchy"></option>
+            <option value="Story-led"></option>
+            <option value="Educational with takeaways"></option>
+            <option value="Thought leadership"></option>
+          </datalist>
+          {% if errors.style %}<span id="style-error" class="field-error">{{ errors.style }}</span>{% endif %}
+        </p>
+        <p class="field {% if errors.emoji_preference %}has-error{% endif %}">
+          <label for="emoji_preference">Emoji preference</label>
+          <select
+            id="emoji_preference"
+            name="emoji_preference"
+            aria-invalid="{{ 'true' if errors.emoji_preference else 'false' }}"
+            {% if errors.emoji_preference %}aria-describedby="emoji-error"{% endif %}
+          >
+            <option value="none" {% if values.emoji_preference == "none" %}selected{% endif %}>None</option>
+            <option value="light" {% if values.emoji_preference == "light" %}selected{% endif %}>Light</option>
+            <option value="frequent" {% if values.emoji_preference == "frequent" %}selected{% endif %}>Frequent</option>
+          </select>
+          {% if errors.emoji_preference %}<span id="emoji-error" class="field-error">{{ errors.emoji_preference }}</span>{% endif %}
+        </p>
+      </div>
+    </fieldset>
+
+    <fieldset class="form-panel">
+      <legend>Publishing defaults</legend>
+      <div class="form-grid">
+        <p class="field field--wide {% if errors.cta %}has-error{% endif %}">
+          <label for="cta">Call to action</label>
+          <input
+            id="cta"
+            name="cta"
+            type="text"
+            maxlength="300"
+            value="{{ values.cta }}"
+            placeholder="Follow for weekly product lessons"
+            aria-invalid="{{ 'true' if errors.cta else 'false' }}"
+            {% if errors.cta %}aria-describedby="cta-error"{% endif %}
+          />
+          {% if errors.cta %}<span id="cta-error" class="field-error">{{ errors.cta }}</span>{% endif %}
+        </p>
+        <p class="field field--wide {% if errors.hashtags %}has-error{% endif %}">
+          <label for="hashtags">Hashtags</label>
+          <input
+            id="hashtags"
+            name="hashtags"
+            type="text"
+            maxlength="500"
+            value="{{ values.hashtags }}"
+            placeholder="#productdesign #careergrowth"
+            aria-invalid="{{ 'true' if errors.hashtags else 'false' }}"
+            {% if errors.hashtags %}aria-describedby="hashtags-error"{% endif %}
+          />
+          <span class="field-hint">Separate with spaces or commas. Missing # is added automatically.</span>
+          {% if errors.hashtags %}<span id="hashtags-error" class="field-error">{{ errors.hashtags }}</span>{% endif %}
+        </p>
+      </div>
+    </fieldset>
+
+    <div class="form-actions">
+      <button class="button" type="submit">Save brand voice</button>
+    </div>
+  </form>
+{% endblock %}

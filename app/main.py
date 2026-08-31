@@ -6,15 +6,15 @@ from fastapi.staticfiles import StaticFiles
 
 from app import __version__
 from app.config import get_settings
-from app.database import ensure_database_dir
-from app.routers import health, pages
+from app.database import init_db
+from app.routers import health, pages, profile
 
 APP_DIR = Path(__file__).resolve().parent
 
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-    ensure_database_dir()
+    init_db()
     yield
 
 
@@ -34,6 +34,7 @@ def create_app() -> FastAPI:
     )
     application.include_router(health.router)
     application.include_router(pages.router)
+    application.include_router(profile.router)
     return application
 
 

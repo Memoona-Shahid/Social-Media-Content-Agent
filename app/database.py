@@ -40,6 +40,13 @@ def ensure_database_dir() -> None:
     db_path.parent.mkdir(parents=True, exist_ok=True)
 
 
+def init_db() -> None:
+    ensure_database_dir()
+    from app.models import profile as _profile  # noqa: F401
+
+    Base.metadata.create_all(bind=engine)
+
+
 def ping_database() -> bool:
     try:
         with engine.connect() as connection:

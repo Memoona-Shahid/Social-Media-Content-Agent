@@ -23,7 +23,8 @@
           </span>
         </a>
         <nav class="nav" aria-label="Primary">
-          <a class="nav__link is-active" href="/">Studio</a>
+          <a class="nav__link {% if active_nav == 'studio' %}is-active{% endif %}" href="/">Studio</a>
+          <a class="nav__link {% if active_nav == 'profile' %}is-active{% endif %}" href="/profile">Brand Voice</a>
         </nav>
         <p class="env-chip" title="Current application environment">{{ app_env }}</p>
       </header>

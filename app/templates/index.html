@@ -45,4 +45,16 @@
       </li>
     </ul>
   </section>
+
+  <section class="voice-callout" aria-labelledby="voice-heading">
+    <div>
+      <h2 id="voice-heading">Brand voice</h2>
+      {% if profile %}
+        <p>Saved for <strong>{{ profile.name }}</strong>, {{ profile.profession }}.</p>
+      {% else %}
+        <p>No profile yet. Save your name, audience, and tone before generating posts.</p>
+      {% endif %}
+    </div>
+    <a class="button" href="/profile">{{ "Edit profile" if profile else "Create profile" }}</a>
+  </section>
 {% endblock %}
