@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from app import __version__
 from app.config import get_settings
 from app.database import init_db
-from app.routers import health, pages, profile
+from app.routers import health, memory, pages, profile
 
 APP_DIR = Path(__file__).resolve().parent
 
@@ -35,6 +35,7 @@ def create_app() -> FastAPI:
     application.include_router(health.router)
     application.include_router(pages.router)
     application.include_router(profile.router)
+    application.include_router(memory.router)
     return application
 
 

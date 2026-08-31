@@ -6,7 +6,7 @@
     <h1>Write once. Sound like yourself on every platform.</h1>
     <p class="lede">
       This studio turns a topic and your brand voice into ready-to-publish posts.
-      The application foundation, configuration, and workspace UI are now live.
+      Saved voice is loaded automatically for every generation request.
     </p>
   </section>
 
@@ -30,6 +30,15 @@
         <span class="status-card__meta">Local file database</span>
       </li>
       <li class="status-card">
+        <span class="status-card__label">Memory</span>
+        <strong class="{{ 'ok' if memory.loaded else 'muted' }}">
+          {{ "Loaded" if memory.loaded else "Empty" }}
+        </strong>
+        <span class="status-card__meta">
+          {{ memory.name if memory.loaded else "No brand voice yet" }}
+        </span>
+      </li>
+      <li class="status-card">
         <span class="status-card__label">Groq</span>
         <strong class="{{ 'ok' if groq_configured else 'muted' }}">
           {{ "Key loaded" if groq_configured else "Not set" }}
@@ -46,15 +55,52 @@
     </ul>
   </section>
 
-  <section class="voice-callout" aria-labelledby="voice-heading">
-    <div>
-      <h2 id="voice-heading">Brand voice</h2>
-      {% if profile %}
-        <p>Saved for <strong>{{ profile.name }}</strong>, {{ profile.profession }}.</p>
-      {% else %}
-        <p>No profile yet. Save your name, audience, and tone before generating posts.</p>
-      {% endif %}
+  <section class="memory-board" aria-labelledby="memory-heading">
+    <div class="section-head">
+      <div>
+        <h2 id="memory-heading">Loaded memory</h2>
+        <p>This snapshot is what generation will use. It refreshes from SQLite on each request.</p>
+      </div>
+      <a class="button" href="/profile">{{ "Edit profile" if memory.loaded else "Create profile" }}</a>
     </div>
-    <a class="button" href="/profile">{{ "Edit profile" if profile else "Create profile" }}</a>
+
+    {% if memory.loaded %}
+      <dl class="memory-grid">
+        <div>
+          <dt>Name</dt>
+          <dd>{{ memory.name }}</dd>
+        </div>
+        <div>
+          <dt>Profession</dt>
+          <dd>{{ memory.profession }}</dd>
+        </div>
+        <div>
+          <dt>Audience</dt>
+          <dd>{{ memory.audience }}</dd>
+        </div>
+        <div>
+          <dt>Tone</dt>
+          <dd>{{ memory.tone }}</dd>
+        </div>
+        <div>
+          <dt>Style</dt>
+          <dd>{{ memory.style or "—" }}</dd>
+        </div>
+        <div>
+          <dt>Emoji</dt>
+          <dd>{{ memory.emoji_preference }}</dd>
+        </div>
+        <div>
+          <dt>Call to action</dt>
+          <dd>{{ memory.cta or "—" }}</dd>
+        </div>
+        <div>
+          <dt>Hashtags</dt>
+          <dd>{{ memory.hashtags or "—" }}</dd>
+        </div>
+      </dl>
+    {% else %}
+      <p class="memory-empty">No brand voice is saved yet. Create a profile to load memory for generation.</p>
+    {% endif %}
   </section>
 {% endblock %}

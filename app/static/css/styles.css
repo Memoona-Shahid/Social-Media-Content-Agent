@@ -183,7 +183,7 @@ h2 {
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 0.9rem;
 }
 
@@ -255,6 +255,46 @@ h2 {
 
 .voice-callout p {
   margin: 0;
+  color: var(--muted);
+}
+
+.memory-board {
+  margin-top: 2.2rem;
+}
+
+.memory-grid {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+}
+
+.memory-grid > div {
+  margin: 0;
+  padding: 1rem 1.05rem;
+  border: 1px solid var(--rule);
+  background: var(--panel);
+}
+
+.memory-grid dt {
+  margin: 0 0 0.35rem;
+  color: var(--muted);
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.memory-grid dd {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.memory-empty {
+  margin: 0;
+  padding: 1.15rem 1.2rem;
+  border: 1px dashed var(--rule);
+  background: var(--panel);
   color: var(--muted);
 }
 
@@ -372,9 +412,9 @@ h2 {
 }
 
 @media (max-width: 820px) {
-  .status-grid,
-  .form-grid {
-    grid-template-columns: 1fr 1fr;
+  .form-grid,
+  .memory-grid {
+    grid-template-columns: 1fr;
   }
 
   .section-head,
@@ -400,7 +440,8 @@ h2 {
   }
 
   .status-grid,
-  .form-grid {
+  .form-grid,
+  .memory-grid {
     grid-template-columns: 1fr;
   }
 
