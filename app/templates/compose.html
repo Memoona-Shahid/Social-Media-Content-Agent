@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="hero hero--compact">
+    <p class="kicker">Compose</p>
+    <h1>What should this post be about?</h1>
+    <p class="lede">
+      Enter a topic and choose a platform. Your saved brand voice is attached automatically.
+    </p>
+  </section>
+
+  {% if not memory.loaded %}
+    <p class="notice">
+      No brand voice is loaded yet.
+      <a href="/profile">Create a profile</a> before you generate, so posts sound like you.
+    </p>
+  {% endif %}
+
+  {% if ready %}
+    <p class="flash" data-flash role="status">Brief captured for {{ platform_label }}.</p>
+  {% endif %}
+
+  <form class="voice-form" method="post" action="/compose" novalidate>
+    <fieldset class="form-panel">
+      <legend>Topic</legend>
+      <p class="field field--wide {% if errors.topic %}has-error{% endif %}">
+        <label for="topic">Topic or angle</label>
+        <textarea
+          id="topic"
+          name="topic"
+          rows="5"
+          maxlength="500"
+          required
+          placeholder="A launch note about our new onboarding flow for first-time users"
+          aria-invalid="{{ 'true' if errors.topic else 'false' }}"
+          {% if errors.topic %}aria-describedby="topic-error"{% endif %}
+        >{{ values.topic }}</textarea>
+        <span class="field-hint">Be specific. One idea works better than a list.</span>
+        {% if errors.topic %}<span id="topic-error" class="field-error">{{ errors.topic }}</span>{% endif %}
+      </p>
+    </fieldset>
+
+    <fieldset class="form-panel {% if errors.platform %}has-error{% endif %}">
+      <legend>Platform</legend>
+      <p class="field-hint" id="platform-hint">Choose where this should be published.</p>
+      <div class="platform-picker" role="radiogroup" aria-describedby="platform-hint">
+        {% for key, meta in platforms.items() %}
+          <label class="platform-card">
+            <input
+              type="radio"
+              name="platform"
+              value="{{ key }}"
+              {% if values.platform == key %}checked{% endif %}
+            />
+            <span class="platform-card__name">{{ meta.label }}</span>
+            <span class="platform-card__hint">{{ meta.hint }}</span>
+          </label>
+        {% endfor %}
+      </div>
+      {% if errors.platform %}<span class="field-error">{{ errors.platform }}</span>{% endif %}
+    </fieldset>
+
+    <div class="form-actions">
+      <button class="button" type="submit">Use this topic</button>
+    </div>
+  </form>
+
+  {% if captured_brief %}
+    <section class="brief-board" aria-labelledby="brief-heading">
+      <div class="section-head">
+        <div>
+          <h2 id="brief-heading">Current brief</h2>
+          <p>This topic and platform are ready for the next generation step.</p>
+        </div>
+      </div>
+      <dl class="memory-grid">
+        <div>
+          <dt>Platform</dt>
+          <dd>{{ platform_label }}</dd>
+        </div>
+        <div>
+          <dt>Brand voice</dt>
+          <dd>{{ memory.name if memory.loaded else "Not loaded" }}</dd>
+        </div>
+        <div class="memory-span">
+          <dt>Topic</dt>
+          <dd>{{ captured_brief.topic }}</dd>
+        </div>
+      </dl>
+    </section>
+  {% endif %}
+{% endblock %}

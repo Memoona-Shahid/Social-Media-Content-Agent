@@ -61,7 +61,10 @@
         <h2 id="memory-heading">Loaded memory</h2>
         <p>This snapshot is what generation will use. It refreshes from SQLite on each request.</p>
       </div>
-      <a class="button" href="/profile">{{ "Edit profile" if memory.loaded else "Create profile" }}</a>
+      <div class="button-row">
+        <a class="button" href="/compose">New topic</a>
+        <a class="button button--ghost" href="/profile">{{ "Edit profile" if memory.loaded else "Create profile" }}</a>
+      </div>
     </div>
 
     {% if memory.loaded %}

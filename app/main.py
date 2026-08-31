@@ -3,11 +3,12 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.sessions import SessionMiddleware
 
 from app import __version__
 from app.config import get_settings
 from app.database import init_db
-from app.routers import health, memory, pages, profile
+from app.routers import health, memory, pages, profile, topic
 
 APP_DIR = Path(__file__).resolve().parent
 
@@ -36,6 +37,13 @@ def create_app() -> FastAPI:
     application.include_router(pages.router)
     application.include_router(profile.router)
     application.include_router(memory.router)
+    application.include_router(topic.router)
+    application.add_middleware(
+        SessionMiddleware,
+        secret_key=settings.secret_key,
+        session_cookie="ca_session",
+        same_site="lax",
+    )
     return application
 
 
