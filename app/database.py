@@ -46,6 +46,21 @@ def init_db() -> None:
     from app.models import profile as _profile  # noqa: F401
 
     Base.metadata.create_all(bind=engine)
+    _ensure_sqlite_columns()
+
+
+def _ensure_sqlite_columns() -> None:
+    if not settings.is_sqlite:
+        return
+    with engine.begin() as connection:
+        rows = connection.execute(text("PRAGMA table_info(generated_posts)")).fetchall()
+        columns = {row[1] for row in rows}
+        if columns and "template" not in columns:
+            connection.execute(
+                text(
+                    "ALTER TABLE generated_posts ADD COLUMN template VARCHAR(64) DEFAULT 'standard'"
+                )
+            )
 
 
 def ping_database() -> bool:

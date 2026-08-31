@@ -23,14 +23,18 @@
 
   {% if generation %}
     <dl class="memory-grid">
-      <div>
-        <dt>Platform</dt>
-        <dd>{{ platform_label }}</dd>
-      </div>
-      <div>
-        <dt>Brand voice</dt>
-        <dd>{{ memory.name if memory.loaded else "Not loaded" }}</dd>
-      </div>
+        <div>
+          <dt>Platform</dt>
+          <dd>{{ platform_label }}</dd>
+        </div>
+        <div>
+          <dt>Template</dt>
+          <dd>{{ template_label }}</dd>
+        </div>
+        <div>
+          <dt>Brand voice</dt>
+          <dd>{{ memory.name if memory.loaded else "Not loaded" }}</dd>
+        </div>
       <div class="memory-span">
         <dt>Topic</dt>
         <dd>{{ generation.topic }}</dd>

@@ -5,7 +5,7 @@
     <p class="kicker">Compose</p>
     <h1>What should this post be about?</h1>
     <p class="lede">
-      Enter a topic and choose a platform. Your saved brand voice is attached automatically.
+      Enter a topic, choose a platform, and pick a prompt template. Your brand voice is attached automatically.
     </p>
   </section>
 
@@ -62,6 +62,26 @@
       {% if errors.platform %}<span class="field-error">{{ errors.platform }}</span>{% endif %}
     </fieldset>
 
+    <fieldset class="form-panel {% if errors.template %}has-error{% endif %}">
+      <legend>Template</legend>
+      <p class="field-hint" id="template-hint">Choose the shape of the post.</p>
+      <div class="template-picker" role="radiogroup" aria-describedby="template-hint">
+        {% for key, meta in templates.items() %}
+          <label class="platform-card">
+            <input
+              type="radio"
+              name="template"
+              value="{{ key }}"
+              {% if values.template == key %}checked{% endif %}
+            />
+            <span class="platform-card__name">{{ meta.label }}</span>
+            <span class="platform-card__hint">{{ meta.hint }}</span>
+          </label>
+        {% endfor %}
+      </div>
+      {% if errors.template %}<span class="field-error">{{ errors.template }}</span>{% endif %}
+    </fieldset>
+
     <div class="form-actions">
       <button class="button" type="submit">Use this topic</button>
     </div>
@@ -72,13 +92,17 @@
       <div class="section-head">
         <div>
           <h2 id="brief-heading">Current brief</h2>
-          <p>This topic and platform are compiled with brand memory into a structured prompt.</p>
+          <p>This topic, platform, and template are compiled with brand memory into a structured prompt.</p>
         </div>
       </div>
       <dl class="memory-grid">
         <div>
           <dt>Platform</dt>
           <dd>{{ platform_label }}</dd>
+        </div>
+        <div>
+          <dt>Template</dt>
+          <dd>{{ template_label }}</dd>
         </div>
         <div>
           <dt>Brand voice</dt>

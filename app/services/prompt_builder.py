@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from textwrap import dedent
 
+from app.schemas.templates import TEMPLATE_OPTIONS, template_label
 from app.schemas.topic import PLATFORM_OPTIONS, TopicBrief
 from app.services.memory_service import BrandMemory
 from app.services.topic_service import platform_label
@@ -54,6 +55,8 @@ class BuiltPrompt:
     topic: str = ""
     platform: str = ""
     platform_label: str = ""
+    template: str = ""
+    template_label: str = ""
     system: str = ""
     user: str = ""
     missing: tuple[str, ...] = ()
@@ -72,6 +75,8 @@ class BuiltPrompt:
             "topic": self.topic,
             "platform": self.platform,
             "platform_label": self.platform_label,
+            "template": self.template,
+            "template_label": self.template_label,
             "system": self.system,
             "user": self.user,
             "messages": self.as_messages(),
@@ -90,21 +95,30 @@ def build_prompt(memory: BrandMemory, brief: TopicBrief | None) -> BuiltPrompt:
 
     assert brief is not None
     label = platform_label(brief.platform)
-    system = _system_prompt(memory, brief, label)
-    user = _user_prompt(brief, label)
+    format_label = template_label(brief.template)
+    system = _system_prompt(memory, brief, label, format_label)
+    user = _user_prompt(brief, label, format_label)
     return BuiltPrompt(
         ready=True,
         topic=brief.topic,
         platform=brief.platform,
         platform_label=label,
+        template=brief.template,
+        template_label=format_label,
         system=system,
         user=user,
     )
 
 
-def _system_prompt(memory: BrandMemory, brief: TopicBrief, label: str) -> str:
+def _system_prompt(
+    memory: BrandMemory,
+    brief: TopicBrief,
+    label: str,
+    format_label: str,
+) -> str:
     platform_meta = PLATFORM_OPTIONS[brief.platform]
     constraints = PLATFORM_CONSTRAINTS[brief.platform]
+    template_meta = TEMPLATE_OPTIONS.get(brief.template, TEMPLATE_OPTIONS["standard"])
     emoji_rule = EMOJI_GUIDANCE.get(memory.emoji_preference, EMOJI_GUIDANCE["none"])
     style = memory.style or "Clear, concrete, and easy to scan."
     cta = memory.cta or "No default call to action. End naturally if a CTA does not fit."
@@ -127,6 +141,11 @@ def _system_prompt(memory: BrandMemory, brief: TopicBrief, label: str) -> str:
         - Network: {label} ({platform_meta["hint"]})
         {constraints}
 
+        FORMAT
+        - Template: {format_label}
+        {template_meta["instructions"]}
+        - If FORMAT conflicts with PLATFORM notes, follow FORMAT and still respect hard length limits.
+
         RULES
         - Stay on the given topic. Do not add unrelated ideas.
         - Do not invent facts, metrics, customers, or product claims.
@@ -135,11 +154,11 @@ def _system_prompt(memory: BrandMemory, brief: TopicBrief, label: str) -> str:
     ).strip()
 
 
-def _user_prompt(brief: TopicBrief, label: str) -> str:
-    article = "an" if label == "X" else "a"
+def _user_prompt(brief: TopicBrief, label: str, format_label: str) -> str:
     return dedent(
         f"""\
-        Write {article} {label} post about:
+        Write this as a {format_label} for {label}.
 
+        Topic:
         {brief.topic}"""
     ).strip()

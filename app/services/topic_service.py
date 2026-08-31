@@ -1,6 +1,7 @@
 from fastapi import Request
 from pydantic import ValidationError
 
+from app.schemas.templates import template_label
 from app.schemas.topic import EMPTY_BRIEF, PLATFORM_OPTIONS, TopicBrief
 
 SESSION_KEY = "topic_brief"
@@ -38,10 +39,14 @@ def brief_payload(brief: TopicBrief | None) -> dict[str, object]:
             "topic": "",
             "platform": "",
             "platform_label": "",
+            "template": "",
+            "template_label": "",
         }
     return {
         "captured": True,
         "topic": brief.topic,
         "platform": brief.platform,
         "platform_label": platform_label(brief.platform),
+        "template": brief.template,
+        "template_label": template_label(brief.template),
     }

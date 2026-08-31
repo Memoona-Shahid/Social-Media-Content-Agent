@@ -20,6 +20,7 @@ def record_generation(
         provider=result.provider,
         model=result.model,
         voice_name=voice_name,
+        template=result.template or "standard",
     )
     db.add(row)
     db.commit()

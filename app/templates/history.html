@@ -14,7 +14,7 @@
       {% for post in posts %}
         <li>
           <a class="history-card" href="/history/{{ post.id }}">
-            <span class="kicker">{{ post.platform_label }}</span>
+            <span class="kicker">{{ post.platform_label }} · {{ post.template_label }}</span>
             <strong>{{ post.topic }}</strong>
             <span class="history-card__excerpt">{{ post.excerpt }}</span>
             <span class="history-card__meta">{{ post.created_label }} · {{ post.provider }}</span>

@@ -5,6 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
 from app.models.profile import utc_now
+from app.schemas.templates import template_label
 from app.schemas.topic import PLATFORM_OPTIONS
 
 
@@ -18,6 +19,7 @@ class GeneratedPost(Base):
     provider: Mapped[str] = mapped_column(String(32))
     model: Mapped[str] = mapped_column(String(120))
     voice_name: Mapped[str] = mapped_column(String(120), default="")
+    template: Mapped[str] = mapped_column(String(64), default="standard")
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=utc_now,
@@ -27,6 +29,10 @@ class GeneratedPost(Base):
     def platform_label(self) -> str:
         meta = PLATFORM_OPTIONS.get(self.platform)
         return meta["label"] if meta else self.platform
+
+    @property
+    def template_label(self) -> str:
+        return template_label(self.template or "standard")
 
     @property
     def excerpt(self) -> str:
@@ -52,6 +58,8 @@ class GeneratedPost(Base):
             "provider": self.provider,
             "model": self.model,
             "voice_name": self.voice_name,
+            "template": self.template or "standard",
+            "template_label": self.template_label,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "created_label": self.created_label,
             "excerpt": self.excerpt,

@@ -350,6 +350,13 @@ h2 {
   margin: 0.85rem 0 0.6rem;
 }
 
+.template-picker {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin: 0.85rem 0 0.6rem;
+}
+
 .platform-card {
   position: relative;
   display: grid;
@@ -644,7 +651,8 @@ h2 {
 @media (max-width: 820px) {
   .form-grid,
   .memory-grid,
-  .platform-picker {
+  .platform-picker,
+  .template-picker {
     grid-template-columns: 1fr 1fr;
   }
 
@@ -673,7 +681,8 @@ h2 {
   .status-grid,
   .form-grid,
   .memory-grid,
-  .platform-picker {
+  .platform-picker,
+  .template-picker {
     grid-template-columns: 1fr;
   }
 

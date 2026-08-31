@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
 
 from app.dependencies import get_brand_memory
+from app.schemas.templates import template_label as format_name
 from app.services.generator import get_generation, pop_generation_error
 from app.services.memory_service import BrandMemory
 from app.services.topic_service import platform_label
@@ -24,6 +25,7 @@ def output_page(
         memory=memory,
         generation=generation,
         platform_label=platform_label(generation.platform) if generation else "",
+        template_label=format_name(generation.template) if generation else "",
         generate_error=pop_generation_error(request.session),
         generated=bool(generated) and generation is not None,
     )

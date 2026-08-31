@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from pydantic import ValidationError
 
 from app.dependencies import get_brand_memory, get_built_prompt
+from app.schemas.templates import TEMPLATE_OPTIONS
 from app.schemas.topic import EMPTY_BRIEF, PLATFORM_OPTIONS, TopicBrief
 from app.services import topic_service
 from app.services.generator import get_generation, pop_generation_error
@@ -22,6 +23,8 @@ def _friendly_errors(exc: ValidationError) -> dict[str, str]:
             message = message.removeprefix("Value error, ")
         elif field == "platform":
             message = "Choose LinkedIn, X, Instagram, or Threads."
+        elif field == "template":
+            message = "Choose a prompt template."
         elif "should have at most" in message:
             message = "This value is too long."
         errors[field] = message
@@ -47,8 +50,10 @@ def _render(
         errors=errors or {},
         ready=ready,
         platforms=PLATFORM_OPTIONS,
+        templates=TEMPLATE_OPTIONS,
         captured_brief=brief,
         platform_label=topic_service.platform_label(brief.platform) if brief else "",
+        template_label=topic_service.template_label(brief.template) if brief else "",
         prompt=prompt,
         generation=get_generation(request.session),
         generate_error=pop_generation_error(request.session),
@@ -80,8 +85,9 @@ def capture_brief(
     prompt: BuiltPrompt = Depends(get_built_prompt),
     topic: str = Form(""),
     platform: str = Form(""),
+    template: str = Form("standard"),
 ) -> Response:
-    raw = {"topic": topic, "platform": platform}
+    raw = {"topic": topic, "platform": platform, "template": template}
     try:
         payload = TopicBrief.model_validate(raw)
     except ValidationError as exc:
@@ -100,3 +106,13 @@ def capture_brief(
 @router.get("/api/brief")
 def read_brief(request: Request) -> dict[str, object]:
     return topic_service.brief_payload(topic_service.get_brief(request))
+
+
+@router.get("/api/templates")
+def list_templates() -> dict[str, object]:
+    return {
+        "items": [
+            {"id": key, "label": meta["label"], "hint": meta["hint"]}
+            for key, meta in TEMPLATE_OPTIONS.items()
+        ]
+    }

@@ -16,6 +16,14 @@ PLATFORM_MAX_TOKENS = {
     "threads": 450,
 }
 
+TEMPLATE_MAX_TOKENS = {
+    "linkedin_post": 900,
+    "x_thread": 1200,
+    "project_showcase": 900,
+    "educational": 1000,
+    "personal_story": 800,
+}
+
 SESSION_KEY = "generation"
 SESSION_ERROR_KEY = "generation_error"
 
@@ -31,6 +39,7 @@ class GenerationResult:
     model: str
     platform: str
     topic: str
+    template: str = "standard"
 
     def to_dict(self) -> dict[str, str]:
         return {
@@ -39,6 +48,7 @@ class GenerationResult:
             "model": self.model,
             "platform": self.platform,
             "topic": self.topic,
+            "template": self.template or "standard",
         }
 
 
@@ -58,6 +68,7 @@ def get_generation(session: dict[str, Any]) -> GenerationResult | None:
             model=str(raw.get("model", "")),
             platform=str(raw.get("platform", "")),
             topic=str(raw.get("topic", "")),
+            template=str(raw.get("template") or "standard"),
         )
     except Exception:
         return None
@@ -89,7 +100,7 @@ def generate_post(
         "model": model,
         "messages": prompt.as_messages(),
         "temperature": config.llm_temperature,
-        "max_tokens": PLATFORM_MAX_TOKENS.get(prompt.platform, 700),
+        "max_tokens": _max_tokens(prompt.platform, prompt.template),
     }
 
     try:
@@ -116,7 +127,14 @@ def generate_post(
         model=model,
         platform=prompt.platform,
         topic=prompt.topic,
+        template=prompt.template or "standard",
     )
+
+
+def _max_tokens(platform: str, template: str) -> int:
+    base = PLATFORM_MAX_TOKENS.get(platform, 700)
+    extra = TEMPLATE_MAX_TOKENS.get(template, 0)
+    return max(base, extra)
 
 
 def _provider_config(settings: Settings) -> tuple[str, str, str, str]:
