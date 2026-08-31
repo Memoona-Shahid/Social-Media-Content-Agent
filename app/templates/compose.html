@@ -18,8 +18,6 @@
 
   {% if generate_error %}
     <p class="flash flash--warn" role="alert">{{ generate_error }}</p>
-  {% elif generated %}
-    <p class="flash" data-flash role="status">Draft generated.</p>
   {% elif ready %}
     <p class="flash" data-flash role="status">Brief captured for {{ platform_label }}.</p>
   {% endif %}
@@ -114,6 +112,7 @@
         </article>
       </div>
       <form class="generate-form" method="post" action="/generate">
+        <input type="hidden" name="source" value="compose" />
         {% if not llm_ready %}
           <p class="notice">{{ llm_setup_message }}</p>
         {% endif %}
@@ -135,16 +134,8 @@
   </section>
 
   {% if generation %}
-    <section class="draft-board" aria-labelledby="draft-heading">
-      <div class="section-head">
-        <div>
-          <h2 id="draft-heading">Generated draft</h2>
-          <p>{{ generation.provider }} · {{ generation.model }}</p>
-        </div>
-      </div>
-      <article class="prompt-block">
-        <pre>{{ generation.content }}</pre>
-      </article>
-    </section>
+    <p class="output-back">
+      A draft is ready. <a href="/output">Open output</a>
+    </p>
   {% endif %}
 {% endblock %}

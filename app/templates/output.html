@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="hero hero--compact">
+    <p class="kicker">Output</p>
+    <h1>
+      {% if generation %}{{ platform_label }} draft{% else %}No draft yet{% endif %}
+    </h1>
+    <p class="lede">
+      {% if generation %}
+        Ready to copy or regenerate. The brief and brand voice stay attached.
+      {% else %}
+        Generate a post from Compose to see it here.
+      {% endif %}
+    </p>
+  </section>
+
+  {% if generate_error %}
+    <p class="flash flash--warn" role="alert">{{ generate_error }}</p>
+  {% elif generated %}
+    <p class="flash" data-flash role="status">Draft generated.</p>
+  {% endif %}
+
+  {% if generation %}
+    <dl class="memory-grid">
+      <div>
+        <dt>Platform</dt>
+        <dd>{{ platform_label }}</dd>
+      </div>
+      <div>
+        <dt>Brand voice</dt>
+        <dd>{{ memory.name if memory.loaded else "Not loaded" }}</dd>
+      </div>
+      <div class="memory-span">
+        <dt>Topic</dt>
+        <dd>{{ generation.topic }}</dd>
+      </div>
+    </dl>
+
+    <article class="draft-canvas" aria-labelledby="draft-copy-heading">
+      <h2 id="draft-copy-heading" class="visually-hidden">Generated post</h2>
+      <pre id="draft-text" data-copy-source>{{ generation.content }}</pre>
+    </article>
+
+    <div class="button-row output-actions">
+      <button class="button button--ghost" type="button" data-copy data-copy-label="Copy">
+        Copy
+      </button>
+      <form method="post" action="/generate">
+        <input type="hidden" name="source" value="output" />
+        <button class="button" type="submit" {% if not llm_ready %}disabled{% endif %}>
+          Regenerate
+        </button>
+      </form>
+    </div>
+    {% if not llm_ready %}
+      <p class="notice">{{ llm_setup_message }}</p>
+    {% endif %}
+    <p class="output-back"><a href="/compose">Back to compose</a></p>
+  {% else %}
+    <p class="memory-empty">
+      No generated post is stored yet.
+      <a href="/compose">Write a topic</a> and generate a draft.
+    </p>
+  {% endif %}
+{% endblock %}
